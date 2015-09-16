@@ -14,7 +14,9 @@ namespace AsteroidShip
         KeyboardState prevKey;
         MouseState curMouse;
         MouseState prevMouse;
-        GamePadState gamePad;
+        GamePadState curGamePad;
+        GamePadState prevGamePad;
+        Vector2 mouseSpeed;
         public bool isconnected { get; set; }
 
         public InputController(Game1 _game)
@@ -23,12 +25,21 @@ namespace AsteroidShip
         }
         public void Update()
         {
+            CheckController();
             prevKey = curKey;
             curKey = Keyboard.GetState();
             prevMouse = curMouse;
+            if (isconnected)
+            {
+                MouseController();
+            }
             curMouse = Mouse.GetState();
-            gamePad = GamePad.GetState(PlayerIndex.One);
-            if (gamePad.IsConnected)
+            prevGamePad = curGamePad;
+            curGamePad = GamePad.GetState(PlayerIndex.One);
+        }
+        private void CheckController()
+        {
+            if (curGamePad.IsConnected)
             {
                 isconnected = true;
             }
@@ -36,6 +47,12 @@ namespace AsteroidShip
             {
                 isconnected = false;
             }
+        }
+        private void MouseController()
+        {
+            Console.WriteLine(getRightJoystick().X + " " + getRightJoystick().Y);
+            mouseSpeed = new Vector2(getRightJoystick().X, getRightJoystick().Y);
+            Mouse.SetPosition(curMouse.X + (int)(mouseSpeed.X*10), curMouse.Y + (int)(mouseSpeed.Y*-10));
         }
         public bool getKey(Keys keyvar){
             if (curKey.IsKeyDown(keyvar) && prevKey.IsKeyUp(keyvar)){
@@ -51,15 +68,22 @@ namespace AsteroidShip
         }
         public Vector2 getRightJoystick()
         {
-            return new Vector2(gamePad.ThumbSticks.Right.X, gamePad.ThumbSticks.Right.Y);
+            return new Vector2(curGamePad.ThumbSticks.Right.X, curGamePad.ThumbSticks.Right.Y);
         }
         public Vector2 getLeftJoystick()
         {
-            return new Vector2(gamePad.ThumbSticks.Left.X, gamePad.ThumbSticks.Left.Y);
+            return new Vector2(curGamePad.ThumbSticks.Left.X, curGamePad.ThumbSticks.Left.Y);
         }
         public Vector2 getMousePosition()
         {
             return new Vector2(curMouse.X, curMouse.Y);
+        }
+        public bool getTriggerClick()
+        {
+            if(curGamePad.IsButtonDown(Buttons.RightTrigger) && prevGamePad.IsButtonUp(Buttons.RightTrigger)){
+                return true;
+            }
+            return false;
         }
         public bool getMouseClick()
         {

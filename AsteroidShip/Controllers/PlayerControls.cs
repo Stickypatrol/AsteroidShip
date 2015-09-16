@@ -31,7 +31,7 @@ namespace AsteroidShip
         }
         private void ShootControl()
         {
-            if (inputController.getMouseClick())
+            if (inputController.getMouseClick() || inputController.getTriggerClick())
             {
                 game.objectController.CreateBullet(new Vector2(newpos.X - game.GraphicsDevice.Viewport.Width/2, newpos.Y - game.GraphicsDevice.Viewport.Height/2));
             }
