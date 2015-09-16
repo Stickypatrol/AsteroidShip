@@ -46,32 +46,57 @@ namespace AsteroidShip
         }
         private void BaseSpeed()
         {
-            if (game.inputController.getKeys(Keys.S) || game.inputController.getKeys(Keys.Down))
+            if (game.inputController.isconnected)
             {
-                if (basespeed.Y >= -5f)
+                Vector2 leftController = game.inputController.getLeftJoystick();
+                basespeed.Y += 0.2f * leftController.Y;
+                basespeed.X += -0.2f * leftController.X;
+                if (basespeed.Y > 5f)
                 {
-                    basespeed.Y -= 0.2f;
+                    basespeed.Y = 5f;
+                }
+                else if (basespeed.Y < -5f)
+                {
+                    basespeed.Y = -5f;
+                }
+                if (basespeed.X > 5f)
+                {
+                    basespeed.X = 5f;
+                }
+                else if (basespeed.X < -5f)
+                {
+                    basespeed.X = -5f;
                 }
             }
-            if (game.inputController.getKeys(Keys.W) || game.inputController.getKeys(Keys.Up))
+            else
             {
-                if (basespeed.Y <= 5f)
+                if (game.inputController.getKeys(Keys.S) || game.inputController.getKeys(Keys.Down))
                 {
-                    basespeed.Y += 0.2f;
+                    if (basespeed.Y >= -5f)
+                    {
+                        basespeed.Y -= 0.2f;
+                    }
                 }
-            }
-            if (game.inputController.getKeys(Keys.D) || game.inputController.getKeys(Keys.Right))
-            {
-                if (basespeed.X >= -5f)
+                if (game.inputController.getKeys(Keys.W) || game.inputController.getKeys(Keys.Up))
                 {
-                    basespeed.X -= 0.2f;
+                    if (basespeed.Y <= 5f)
+                    {
+                        basespeed.Y += 0.2f;
+                    }
                 }
-            }
-            if (game.inputController.getKeys(Keys.A) || game.inputController.getKeys(Keys.Left))
-            {
-                if (basespeed.X <= 5f)
+                if (game.inputController.getKeys(Keys.D) || game.inputController.getKeys(Keys.Right))
                 {
-                    basespeed.X += 0.2f;
+                    if (basespeed.X >= -5f)
+                    {
+                        basespeed.X -= 0.2f;
+                    }
+                }
+                if (game.inputController.getKeys(Keys.A) || game.inputController.getKeys(Keys.Left))
+                {
+                    if (basespeed.X <= 5f)
+                    {
+                        basespeed.X += 0.2f;
+                    }
                 }
             }
         }

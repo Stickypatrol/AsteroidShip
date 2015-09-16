@@ -14,6 +14,8 @@ namespace AsteroidShip
         KeyboardState prevKey;
         MouseState curMouse;
         MouseState prevMouse;
+        GamePadState gamePad;
+        public bool isconnected { get; set; }
 
         public InputController(Game1 _game)
         {
@@ -25,7 +27,15 @@ namespace AsteroidShip
             curKey = Keyboard.GetState();
             prevMouse = curMouse;
             curMouse = Mouse.GetState();
-            
+            gamePad = GamePad.GetState(PlayerIndex.One);
+            if (gamePad.IsConnected)
+            {
+                isconnected = true;
+            }
+            else
+            {
+                isconnected = false;
+            }
         }
         public bool getKey(Keys keyvar){
             if (curKey.IsKeyDown(keyvar) && prevKey.IsKeyUp(keyvar)){
@@ -38,6 +48,14 @@ namespace AsteroidShip
             {
                 return true;
             } return false;
+        }
+        public Vector2 getRightJoystick()
+        {
+            return new Vector2(gamePad.ThumbSticks.Right.X, gamePad.ThumbSticks.Right.Y);
+        }
+        public Vector2 getLeftJoystick()
+        {
+            return new Vector2(gamePad.ThumbSticks.Left.X, gamePad.ThumbSticks.Left.Y);
         }
         public Vector2 getMousePosition()
         {
