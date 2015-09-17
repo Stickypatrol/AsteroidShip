@@ -41,7 +41,10 @@ namespace AsteroidShip
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+                return;
+            };
             mouseState = Mouse.GetState();
             cursorPos = new Vector2(mouseState.X, mouseState.Y);
             objectController.Update();
