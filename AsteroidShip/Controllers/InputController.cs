@@ -80,7 +80,8 @@ namespace AsteroidShip
         }
         public bool getTriggerClick()
         {
-            if(curGamePad.IsButtonDown(Buttons.RightTrigger) && prevGamePad.IsButtonUp(Buttons.RightTrigger)){
+            if((curGamePad.IsButtonDown(Buttons.RightTrigger) && prevGamePad.IsButtonUp(Buttons.RightTrigger)) || 
+                curGamePad.IsButtonDown(Buttons.RightShoulder) && prevGamePad.IsButtonUp(Buttons.RightShoulder)){
                 return true;
             }
             return false;
