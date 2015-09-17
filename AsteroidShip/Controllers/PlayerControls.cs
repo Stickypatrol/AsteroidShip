@@ -14,6 +14,7 @@ namespace AsteroidShip
         Ship ship;
         InputController inputController;
         Vector2 newpos;
+        int weaponmode;
 
 
         public PlayerControls(Game1 _game, Ship _ship)
@@ -27,7 +28,6 @@ namespace AsteroidShip
         {
             MouseControls(inputController.getMousePosition());
             ShootControl();
-            
         }
         private void ShootControl()
         {

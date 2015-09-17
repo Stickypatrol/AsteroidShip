@@ -9,7 +9,6 @@ namespace AsteroidShip
 {
     class Boss : Entity
     {
-        int health;
         public Boss(Game1 _game)
         {
             game = _game;
@@ -20,11 +19,9 @@ namespace AsteroidShip
             rotation = 0f;
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
-            health = 100;
         }
         public override void Update()
         {
-            Console.WriteLine(speed);
             Behaviour();
             position += speed;
             position += game.objectController.basespeed;

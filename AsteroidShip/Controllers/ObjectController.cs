@@ -21,7 +21,7 @@ namespace AsteroidShip
         InputController inputController;
         SpriteFont verdana;
         string score, countDown;
-        int points, highscore;
+        int points, highscore, bossHealth, weaponMode;
 
         public ObjectController(Game1 _game)
         {
@@ -34,6 +34,8 @@ namespace AsteroidShip
             highscore = 0;
             verdana = game.Content.Load<SpriteFont>("Verdana");
             countDown = "";
+            bossHealth = -1;
+            weaponMode = 3;
         }
         public void Update()
         {
@@ -102,6 +104,21 @@ namespace AsteroidShip
         }
         private void ObjectUpdate()
         {
+            if (boss != null)
+            {
+                if (boss.rect.Intersects(game.world.ship.rect))
+                {
+                    points -= 200;
+                }
+                for (int i = 0; i < bulletList.Count; i++)
+                {
+                    if (bulletList[i].rect.Intersects(boss.rect))
+                    {
+                        bulletList.RemoveAt(i);
+                        bossHealth--;
+                    }
+                }
+            }
             for (int i = bulletList.Count - 1; i >= 0; i--)
             {
                 bulletList[i].Update();
@@ -169,7 +186,19 @@ namespace AsteroidShip
         }
         public void CreateBullet(Vector2 direction)
         {
-            bulletList.Add(new Bullet(game, direction));
+            if (weaponMode == 1)
+            {
+                bulletList.Add(new Bullet(game, direction, new Vector2(0,0)));
+            }else if(weaponMode == 2){
+                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.5f * -1f, direction.X * 0.5f)));
+                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.5f, direction.X * 0.5f * -1f)));
+            }
+            else if (weaponMode == 3)
+            {
+                bulletList.Add(new Bullet(game, direction, new Vector2(0, 0)));
+                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.5f * -1f, direction.X * 0.5f)));
+                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.5f, direction.X * 0.5f * -1f)));
+            }
         }
         public void CreateAsteroid(int side, int amount)
         {
@@ -181,6 +210,7 @@ namespace AsteroidShip
         public void CreateBoss()
         {
             boss = new Boss(game);
+            bossHealth = 50;
         }
         public void Draw(SpriteBatch batch)
         {

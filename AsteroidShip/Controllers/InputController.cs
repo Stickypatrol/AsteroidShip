@@ -50,7 +50,6 @@ namespace AsteroidShip
         }
         private void MouseController()
         {
-            Console.WriteLine(getRightJoystick().X + " " + getRightJoystick().Y);
             mouseSpeed = new Vector2(getRightJoystick().X, getRightJoystick().Y);
             Mouse.SetPosition(curMouse.X + (int)(mouseSpeed.X*10), curMouse.Y + (int)(mouseSpeed.Y*-10));
         }

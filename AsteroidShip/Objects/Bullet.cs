@@ -11,11 +11,11 @@ namespace AsteroidShip
     {
         InputController inputController;
         ObjectController objectController;
-        public Bullet(Game1 _game, Vector2 direction)
+        public Bullet(Game1 _game, Vector2 direction, Vector2 offset)
         {
             game = _game;
             tex = game.Content.Load<Texture2D>("bullet");
-            position = new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2 - tex.Height / 2);
+            position = new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2 - tex.Height / 2) + offset;
             rotation = 0f;
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
