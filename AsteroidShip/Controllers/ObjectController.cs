@@ -20,7 +20,7 @@ namespace AsteroidShip
         Random rand = new Random();
         InputController inputController;
         SpriteFont verdana;
-        string score, countDown;
+        string score, countDown, levelType;
         int points, highscore, bossHealth, weaponMode;
 
         public ObjectController(Game1 _game)
@@ -34,6 +34,7 @@ namespace AsteroidShip
             highscore = 0;
             verdana = game.Content.Load<SpriteFont>("Verdana");
             countDown = "";
+            levelType = "";
             bossHealth = -1;
             weaponMode = 1;
         }
@@ -45,7 +46,16 @@ namespace AsteroidShip
             {
                 boss.Update();
             }
-        }
+            levelType = game.levelController.leveltype;
+            if (game.levelController.CountDown()>-1)
+            {
+                countDown = game.levelController.CountDown().ToString();
+            }
+            else
+            {
+                countDown = "";
+            }
+            }
         private void BaseSpeed()
         {
             if (game.inputController.isconnected)
@@ -118,6 +128,11 @@ namespace AsteroidShip
                         bossHealth--;
                     }
                 }
+            }
+            if (boss != null && bossHealth < 1)
+            {
+                boss = null;
+                points += 500;
             }
             for (int i = bulletList.Count - 1; i >= 0; i--)
             {
@@ -246,8 +261,9 @@ namespace AsteroidShip
             {
                 boss.Draw(batch);
             }
-            batch.DrawString(verdana, countDown, new Vector2((game.GraphicsDevice.Viewport.Width / 2), (game.GraphicsDevice.Viewport.Height / 3) * 2), Color.White);
+            batch.DrawString(verdana, countDown, new Vector2((game.GraphicsDevice.Viewport.Width / 2)-10, (game.GraphicsDevice.Viewport.Height / 3) * 2), Color.White);
             batch.DrawString(verdana, score, new Vector2((game.GraphicsDevice.Viewport.Width / 10), (game.GraphicsDevice.Viewport.Height / 10) * 2), Color.White);
+            batch.DrawString(verdana, levelType, new Vector2((game.GraphicsDevice.Viewport.Width / 2) - 50, (game.GraphicsDevice.Viewport.Height / 11) * 8), Color.White);
         }
     }
 }

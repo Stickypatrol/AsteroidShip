@@ -26,6 +26,7 @@ namespace AsteroidShip
             position += speed;
             position += game.objectController.basespeed;
             rotation += 0.01f;
+            rect = new Rectangle((int)position.X, (int)position.Y, tex.Height, tex.Width);
         }
         private void Behaviour()
         {

@@ -54,7 +54,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Boss.cs" />
+    <Compile Include="Objects\Boss.cs" />
     <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Objects\Asteroid.cs" />
     <Compile Include="Objects\Background.cs" />
@@ -76,6 +76,7 @@
       <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

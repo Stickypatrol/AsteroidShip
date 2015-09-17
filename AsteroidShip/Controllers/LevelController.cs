@@ -14,15 +14,16 @@ namespace AsteroidShip
         int level, diff, totalTime, timeSince, startTime, interval, side, amount, timeleft;
         int triggerTime { get; set; }
         bool timerunning = true;
+        public string leveltype { get; set; }
         
         public LevelController(Game1 _game)
         {
             game = _game;
             level = 0;
-            startTime = -1;
+            startTime = 0;
             triggerTime = 0;
-            diff = 1;
             rand = new Random();
+            leveltype = "Get Ready!";
         }
         public void Update(GameTime _gameTime)
         {
@@ -34,6 +35,14 @@ namespace AsteroidShip
                 SpawnRate();
             }
         }
+        public int CountDown()
+        {
+            return triggerTime - (totalTime - startTime);
+        }
+        public void StartTime()
+        {
+            startTime = totalTime;
+        }
         private void SpawnRate()
         {
             if (interval != 0 && gameTime.TotalGameTime.Milliseconds % interval == 0)
@@ -43,7 +52,7 @@ namespace AsteroidShip
         }
         private void Timer()
         {
-            if (totalTime - startTime > triggerTime)
+            if (totalTime - startTime == triggerTime)
             {//event happens after the triggertime
                 triggerTime = int.MaxValue;
                 NewLevel();
@@ -67,10 +76,9 @@ namespace AsteroidShip
         }
         private void EasyLevel()
         {
-            Console.WriteLine("easy");
+            leveltype = "Easy level";
             StartTime();
-            triggerTime = 20;
-            diff++;
+            triggerTime = 7;
             interval = 500;
             side = -1;
             amount = 1;
@@ -78,10 +86,9 @@ namespace AsteroidShip
         }
         private void HardLevel()
         {
-            Console.WriteLine("hard");
+            leveltype = "Hard level";
             StartTime();
-            triggerTime = 10;
-            diff++;
+            triggerTime = 5;
             interval = 100;
             side = rand.Next(0, 4);
             amount = 1;
@@ -89,16 +96,12 @@ namespace AsteroidShip
         }
         private void BossLevel()
         {
-            Console.WriteLine("boss");
-            triggerTime = int.MaxValue;
+            leveltype = "Boss level";
+            triggerTime = -1;
             timerunning = false;
             interval = 0;
             game.objectController.isspawning = false;
             game.objectController.CreateBoss();
-        }
-        public void StartTime()
-        {
-            startTime = totalTime;
         }
     }
 }
