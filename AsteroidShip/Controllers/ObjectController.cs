@@ -35,7 +35,7 @@ namespace AsteroidShip
             verdana = game.Content.Load<SpriteFont>("Verdana");
             countDown = "";
             bossHealth = -1;
-            weaponMode = 3;
+            weaponMode = 1;
         }
         public void Update()
         {
@@ -186,6 +186,18 @@ namespace AsteroidShip
         }
         public void CreateBullet(Vector2 direction)
         {
+            if (points > 800)
+            {
+                weaponMode = 3;
+            }
+            else if (points > 400)
+            {
+                weaponMode = 2;
+            }
+            else
+            {
+                weaponMode = 1; 
+            }
             if (weaponMode == 1)
             {
                 bulletList.Add(new Bullet(game, direction, new Vector2(0,0)));
