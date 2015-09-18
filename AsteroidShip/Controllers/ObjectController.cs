@@ -118,20 +118,20 @@ namespace AsteroidShip
             {
                 if (boss.rect.Intersects(game.world.ship.rect))
                 {
-                    points -= 200;
+                    points -= 200;//boss - ship intersection
                 }
                 for (int i = 0; i < bulletList.Count; i++)
                 {
                     if (bulletList[i].rect.Intersects(boss.rect))
                     {
-                        bulletList.RemoveAt(i);
+                        bulletList.RemoveAt(i);//boss - bullet intersection
                         bossHealth--;
                     }
                 }
             }
             if (boss != null && bossHealth < 1)
             {
-                boss = null;
+                boss = null;//checks if boss is dead
                 points += 500;
             }
             for (int i = bulletList.Count - 1; i >= 0; i--)
@@ -139,7 +139,7 @@ namespace AsteroidShip
                 bulletList[i].Update();
                 if (CheckBounds(bulletList[i].position, bulletList[i].tex, 0))
                 {
-                    bulletList.RemoveAt(i);
+                    bulletList.RemoveAt(i);//bullet bounds checking
                 }
             }
             for (int i = asteroidList.Count - 1; i >= 0; i--)
@@ -147,14 +147,14 @@ namespace AsteroidShip
                 asteroidList[i].Update();
                 if (CheckBounds(asteroidList[i].position, asteroidList[i].tex, 100))
                 {
-                    asteroidList.RemoveAt(i);
+                    asteroidList.RemoveAt(i);//asteroid bounds checking
                 }
             }
             for (int i = asteroidList.Count - 1; i >= 0; i--)
             {
                 if (game.world.ship.rect.Intersects(asteroidList[i].rect))
                 {
-                    asteroidList.RemoveAt(i);
+                    asteroidList.RemoveAt(i);//asteroid - ship collision
                     points -= 40;
                 }
                 else
@@ -164,7 +164,7 @@ namespace AsteroidShip
                         if (asteroidList[i].rect.Intersects(bulletList[p].rect))
                         {
                             points += 15;
-                            asteroidList.RemoveAt(i);
+                            asteroidList.RemoveAt(i);//asteroid - bullet collision
                             bulletList.RemoveAt(p);
                             break;
                         }
