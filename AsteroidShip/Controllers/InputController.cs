@@ -87,7 +87,7 @@ namespace AsteroidShip
         }
         public bool getMouseClick()
         {
-            if(curMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released){
+            if(curMouse.LeftButton == ButtonState.Pressed){
                 return true;
             }
             return false;

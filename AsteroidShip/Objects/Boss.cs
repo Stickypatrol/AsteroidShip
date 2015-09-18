@@ -14,7 +14,7 @@ namespace AsteroidShip
             game = _game;
             tex = game.Content.Load<Texture2D>("Boss");
             position = new Vector2(game.GraphicsDevice.Viewport.Width+200, game.GraphicsDevice.Viewport.Height/2 - tex.Height/2);
-            origin = new Vector2(tex.Width / 2, tex.Height / 2);
+            origin = new Vector2(tex.Width/2f, tex.Height/2f);
             speed = new Vector2(0, 0);
             rotation = 0f;
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
@@ -26,7 +26,7 @@ namespace AsteroidShip
             position += speed;
             position += game.objectController.basespeed;
             rotation += 0.01f;
-            rect = new Rectangle((int)position.X, (int)position.Y, tex.Height, tex.Width);
+            rect = new Rectangle((int)position.X, (int)position.Y, 0, 0);
         }
         private void Behaviour()
         {

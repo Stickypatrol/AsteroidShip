@@ -78,7 +78,7 @@ namespace AsteroidShip
         {
             leveltype = "Easy level";
             StartTime();
-            triggerTime = 7;
+            triggerTime = 20;
             interval = 500;
             side = -1;
             amount = 1;
@@ -88,7 +88,7 @@ namespace AsteroidShip
         {
             leveltype = "Hard level";
             StartTime();
-            triggerTime = 5;
+            triggerTime = 10;
             interval = 100;
             side = rand.Next(0, 4);
             amount = 1;

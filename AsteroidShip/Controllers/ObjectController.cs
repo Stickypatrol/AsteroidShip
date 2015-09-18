@@ -14,6 +14,7 @@ namespace AsteroidShip
         public Vector2 basespeed;
         public bool isspawning;
         Game1 game;
+        List<Entity> entityList;
         List<Bullet> bulletList;
         List<Asteroid> asteroidList;
         Boss boss;
@@ -28,6 +29,7 @@ namespace AsteroidShip
             game = _game;
             inputController = game.inputController;
             basespeed = new Vector2(0, 0);
+            entityList = new List<Entity>();
             bulletList = new List<Bullet>();
             asteroidList = new List<Asteroid>();
             points = 0;
@@ -112,6 +114,12 @@ namespace AsteroidShip
                 }
             }
         }
+        /*private void Collision(Rectangle a, Rectangle b)
+        {
+            above = 0;
+            below = 0;
+            if()
+        }*/
         private void ObjectUpdate()
         {
             if (boss != null)
@@ -237,7 +245,7 @@ namespace AsteroidShip
         public void CreateBoss()
         {
             boss = new Boss(game);
-            bossHealth = 50;
+            bossHealth = int.MaxValue;
         }
         public void Draw(SpriteBatch batch)
         {
