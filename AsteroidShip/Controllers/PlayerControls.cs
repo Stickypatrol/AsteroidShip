@@ -11,16 +11,13 @@ namespace AsteroidShip
     class PlayerControls
     {
         Game1 game;
-        Ship ship;
         InputController inputController;
         Vector2 newpos;
-        int weaponmode;
 
 
-        public PlayerControls(Game1 _game, Ship _ship)
+        public PlayerControls(Game1 _game)
         {
             game = _game;
-            ship = _ship;
             inputController = game.inputController;
             game.IsMouseVisible = false;
         }

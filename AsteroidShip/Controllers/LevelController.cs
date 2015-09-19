@@ -11,7 +11,7 @@ namespace AsteroidShip
         Game1 game;
         GameTime gameTime;
         Random rand;
-        int level, diff, totalTime, timeSince, startTime, interval, side, amount, timeleft;
+        int level, totalTime, startTime, interval, side, amount;
         int triggerTime { get; set; }
         bool timerunning = true;
         public string leveltype { get; set; }
@@ -60,19 +60,33 @@ namespace AsteroidShip
         }
         private void NewLevel()
         {
-            if (level == 5)
+            if (level == 6)
             {
                 BossLevel();
             }
-            else if (level == 0 || level % 2 == 0)
+            else if (level == 1 && level + 1 % 2 == 0)
             {
                 EasyLevel();
+            }
+            else if(level == 0)
+            {
+                BeginLevel();
             }
             else
             {
                 HardLevel();
             }
             level++;
+        }
+        private void BeginLevel()
+        {
+            leveltype = "Get Ready!";
+            StartTime();
+            triggerTime = 5;
+            interval = 0;
+            side = -1;
+            amount = 0;
+            game.objectController.isspawning = false;
         }
         private void EasyLevel()
         {

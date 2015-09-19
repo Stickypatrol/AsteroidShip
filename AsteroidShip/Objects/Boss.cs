@@ -30,19 +30,19 @@ namespace AsteroidShip
         }
         private void Behaviour()
         {
-            if (position.X + tex.Width / 2 >= game.world.ship.position.X && speed.X > -3)
+            if (position.X + tex.Width / 2 >= game.objectController.ship.position.X && speed.X > -3)
             {
                 speed.X += -0.02f;
             }
-            else if (position.X + tex.Width / 2 < game.world.ship.position.X && speed.X < 3)
+            else if (position.X + tex.Width / 2 < game.objectController.ship.position.X && speed.X < 3)
             {
                 speed.X += 0.02f;
             }
-            if (position.Y + tex.Height / 2 >= game.world.ship.position.Y && speed.Y > -3)
+            if (position.Y + tex.Height / 2 >= game.objectController.ship.position.Y && speed.Y > -3)
             {
                 speed.Y += -0.02f;
             }
-            else if (position.Y + tex.Height / 2 < game.world.ship.position.Y && speed.Y < 3)
+            else if (position.Y + tex.Height / 2 < game.objectController.ship.position.Y && speed.Y < 3)
             {
                 speed.Y += 0.02f;
             }

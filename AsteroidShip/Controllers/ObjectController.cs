@@ -13,16 +13,15 @@ namespace AsteroidShip
     {
         public Vector2 basespeed;
         public bool isspawning;
+        public Ship ship;
         Game1 game;
-        List<Entity> entityList;
-        List<Bullet> bulletList;
-        List<Asteroid> asteroidList;
-        Boss boss;
         Random rand = new Random();
         InputController inputController;
         SpriteFont verdana;
+        List<Entity> entityList;
+        List<int> cleanList;
         string score, countDown, levelType;
-        int points, highscore, bossHealth, weaponMode;
+        int points, highscore, weaponMode;
 
         public ObjectController(Game1 _game)
         {
@@ -30,24 +29,20 @@ namespace AsteroidShip
             inputController = game.inputController;
             basespeed = new Vector2(0, 0);
             entityList = new List<Entity>();
-            bulletList = new List<Bullet>();
-            asteroidList = new List<Asteroid>();
+            cleanList = new List<int>();
             points = 0;
             highscore = 0;
             verdana = game.Content.Load<SpriteFont>("Verdana");
             countDown = "";
             levelType = "";
-            bossHealth = -1;
             weaponMode = 1;
+            ship = new Ship(game, new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2), 1, 0f);
+            entityList.Add(ship);
         }
         public void Update()
         {
             BaseSpeed();
             ObjectUpdate();
-            if (boss != null)
-            {
-                boss.Update();
-            }
             levelType = game.levelController.leveltype;
             if (game.levelController.CountDown()>-1)
             {
@@ -57,7 +52,7 @@ namespace AsteroidShip
             {
                 countDown = "";
             }
-            }
+        }
         private void BaseSpeed()
         {
             if (game.inputController.isconnected)
@@ -119,55 +114,151 @@ namespace AsteroidShip
             int[] sides = new int[] { 0, 0, 0, 0 };
             Vector2[] A = new Vector2[4];
             Vector2[] B = new Vector2[4];
-            Vector2 originA = new Vector2(a.position.X + (int)a.tex.Width / 2, a.position.Y + (int)a.tex.Height / 2);
-            Vector2 originB = new Vector2(b.position.X + (int)b.tex.Width / 2, b.position.Y + (int)b.tex.Height / 2);
-            float radiusA = (float)Math.Sqrt(2f * Math.Pow(a.tex.Width, 2));
-            float radiusB = (float)Math.Sqrt(2f * Math.Pow(b.tex.Width, 2));
-            A[0] = new Vector2(radiusA * (float)Math.Cos(a.rotation%2*Math.PI), radiusA * (float)Math.Sin(a.rotation%2*Math.PI));
-            A[2] = new Vector2((A[0].X - originA.X) * -1 + originA.X, (A[0].X - originA.Y) * -1 + originA.Y);
+            Vector2 originA = new Vector2(a.position.X, a.position.Y);
+            Vector2 originB = new Vector2(b.position.X, b.position.Y);
+            float radiusA = (float)Math.Sqrt(2f * Math.Pow(a.tex.Width, 2)) / 2;
+            float radiusB = (float)Math.Sqrt(2f * Math.Pow(b.tex.Width, 2)) / 2;
+            A[0] = new Vector2(radiusA * (float)Math.Cos(a.rotation + (Math.PI / 4) % (2 * Math.PI)), radiusA * (float)Math.Sin(a.rotation + (Math.PI / 4) % (2 * Math.PI))) + a.position;
+            A[2] = new Vector2((A[0].X - originA.X) * -1 + originA.X, (A[0].Y - originA.Y) * -1 + originA.Y);
             A[1] = new Vector2(originA.X + A[0].Y - originA.Y, originA.Y + -(A[0].X - originA.X));
-            A[3] = new Vector2((A[1].X - originA.X) * -1 + originA.X, (A[1].X - originA.Y) * -1 + originA.Y);
-            B[0] = new Vector2(radiusB * (float)Math.Cos(b.rotation%2*Math.PI), radiusB * (float)Math.Sin(b.rotation%2*Math.PI));
-            B[2] = new Vector2((B[0].X - originB.X) * -1 + originB.X, (B[0].X - originB.Y) * -1 + originB.Y);
+            A[3] = new Vector2((A[1].X - originA.X) * -1 + originA.X, (A[1].Y - originA.Y) * -1 + originA.Y);
+            B[0] = new Vector2(radiusB * (float)Math.Cos(b.rotation + (Math.PI / 4) % (2 * Math.PI)), radiusB * (float)Math.Sin(b.rotation + (Math.PI / 4) % (2 * Math.PI))) + b.position;
+            B[2] = new Vector2((B[0].X - originB.X) * -1 + originB.X, (B[0].Y - originB.Y) * -1 + originB.Y);
             B[1] = new Vector2(originB.X + B[0].Y - originB.Y, originB.Y + -(B[0].X - originB.X));
-            B[3] = new Vector2((B[1].X - originB.X) * -1 + originB.X, (B[1].X - originB.Y) * -1 + originB.Y);
+            B[3] = new Vector2((B[1].X - originB.X) * -1 + originB.X, (B[1].Y - originB.Y) * -1 + originB.Y);
             for (int p = 0; p < B.Length; p++)
-			{
-                for (int i = 1; i < A.Length+1; i++)
+            {//first part, compares rectangle A to coordinates from rectangle B
+                for (int i = 0; i < A.Length; i++)
                 {
                     float deltaY = 0;
                     float deltaX = 0;
-                    if(A[i%4].Y - A[i-1].Y != 0){
-                        deltaY = (float)Math.Abs(A[i%4].Y - A[i-1].Y);
-                    }else{
+                    if (A[i].Y - A[(i + 1) % 4].Y != 0)
+                    {
+                        deltaY = A[i].Y - A[(i + 1) % 4].Y;
+                    }
+                    else
+                    {
                         deltaY = 0;
+                    } if (A[i].X - A[(i + 1) % 4].X != 0)
+                    {
+                        deltaX = A[i].X - A[(i + 1) % 4].X;
                     }
-                    if(A[i%4].X - A[i-1].X != 0){
-                        deltaX = (float)Math.Abs(A[i%4].X - A[i-1].X);
-                    }else{
+                    else
+                    {
                         deltaX = 0;
-                    }
-                    if (deltaY == 0 || deltaX == 0){
-                        if (A[i].X > B[p].X){
-                            sides[i - 1] = 1;
-                        }else{
-                            sides[i - 1] = -1;
+                    } if (deltaY == 0)
+                    {
+                        if (A[i].Y > B[p].Y)
+                        {
+                            sides[i] = 1;
                         }
-                    }else{
-                        if ((deltaY / deltaX) * B[p].X > B[p].Y){//target coordinate is above the A line
-                            sides[i - 1] = 1;
-                        }else{
-                            sides[i - 1] = -1;
+                        else
+                        {
+                            sides[i] = -1;
                         }
                     }
-                }
-            }
-            for (int i = 0; i < sides.Length-1; i++)
-            {
-                if (sides[i] == sides[i + 1])
+                    else if (deltaX == 0)
+                    {
+                        if (A[i].X > B[p].X)
+                        {
+                            sides[i] = 1;
+                        }
+                        else
+                        {
+                            sides[i] = -1;
+                        }
+                    }
+                    else
+                    {
+                        float slope = deltaY / deltaX;
+                        float Yintercept = A[i].Y - (slope * A[i].X);
+                        if ((slope * B[p].X) + Yintercept > B[p].Y)
+                        {
+                            sides[i] = 1;
+                        }
+                        else
+                        {
+                            sides[i] = -1;
+                        }
+                    }
+                } for (int i = 0; i < sides.Length; i++)
                 {
-                    if(sides.Sum() == 0){
-                        return true;
+                    if (sides.Sum() == 0)
+                    {
+                        if (sides[i] == sides[(i + 1) % 4])
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }//2nd part, compares the rectangles the other way around
+                } for (int i = 0; i < B.Length; i++)
+                {
+                    float deltaY = 0;
+                    float deltaX = 0;
+                    if (B[i].Y - B[(i + 1) % 4].Y != 0)
+                    {
+                        deltaY = B[i].Y - B[(i + 1) % 4].Y;
+                    }
+                    else
+                    {
+                        deltaY = 0;
+                    } if (B[i].X - B[(i + 1) % 4].X != 0)
+                    {
+                        deltaX = B[i].X - B[(i + 1) % 4].X;
+                    }
+                    else
+                    {
+                        deltaX = 0;
+                    } if (deltaY == 0)
+                    {
+                        if (B[i].Y > A[p].Y)
+                        {
+                            sides[i] = 1;
+                        }
+                        else
+                        {
+                            sides[i] = -1;
+                        }
+                    }
+                    else if (deltaX == 0)
+                    {
+                        if (B[i].X > A[p].X)
+                        {
+                            sides[i] = 1;
+                        }
+                        else
+                        {
+                            sides[i] = -1;
+                        }
+                    }
+                    else
+                    {
+                        float slope = deltaY / deltaX;
+                        float Yintercept = B[i].Y - (slope * B[i].X);
+                        if ((slope * A[p].X) + Yintercept > A[p].Y)
+                        {
+                            sides[i] = 1;
+                        }
+                        else
+                        {
+                            sides[i] = -1;
+                        }
+                    }
+                } for (int i = 0; i < sides.Length; i++)
+                {
+                    if (sides.Sum() == 0)
+                    {
+                        if (sides[i] == sides[(i + 1) % 4])
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }
@@ -175,70 +266,70 @@ namespace AsteroidShip
         }
         private void ObjectUpdate()
         {
-            if (boss != null)
+            for (int p = 0; p < entityList.Count; p++)
             {
-                if (boss.rect.Intersects(game.world.ship.rect))
+                if (!CheckBounds(entityList[p]))
                 {
-                    points -= 200;//boss - ship intersection
-                }
-                for (int i = 0; i < bulletList.Count; i++)
-                {
-                    if (bulletList[i].rect.Intersects(boss.rect))
+                    for (int i = 0; i < entityList.Count; i++)
                     {
-                        bulletList.RemoveAt(i);//boss - bullet intersection
-                        bossHealth--;
-                    }
-                }
-            }
-            if (boss != null && bossHealth < 1)
-            {
-                boss = null;//checks if boss is dead
-                points += 500;
-            }
-            for (int i = bulletList.Count - 1; i >= 0; i--)
-            {
-                bulletList[i].Update();
-                if (CheckBounds(bulletList[i].position, bulletList[i].tex, 0))
-                {
-                    bulletList.RemoveAt(i);//bullet bounds checking
-                }
-            }
-            for (int i = asteroidList.Count - 1; i >= 0; i--)
-            {
-                asteroidList[i].Update();
-                if (CheckBounds(asteroidList[i].position, asteroidList[i].tex, 100))
-                {
-                    asteroidList.RemoveAt(i);//asteroid bounds checking
-                }
-            }
-            for (int i = asteroidList.Count - 1; i >= 0; i--)
-            {
-                if (game.world.ship.rect.Intersects(asteroidList[i].rect))
-                {
-                    asteroidList.RemoveAt(i);//asteroid - ship collision
-                    points -= 40;
-                }
-                else
-                {
-                    for (int p = bulletList.Count - 1; p >= 0; p--)
-                    {
-                        if (asteroidList[i].rect.Intersects(bulletList[p].rect))
+                        if (i != p)
                         {
-                            points += 15;
-                            asteroidList.RemoveAt(i);//asteroid - bullet collision
-                            bulletList.RemoveAt(p);
-                            break;
+                            if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < 300) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < 300)
+                            {
+                                if (Collision(entityList[p], entityList[i]))
+                                {//if there is a collision
+                                    //check the datatype and react accordingly
+                                    if (entityList[p] is Ship)
+                                    {
+                                        if (entityList[i] is Boss)
+                                        {
+                                            points -= 100;
+                                        }
+                                        else if (entityList[i] is Asteroid)
+                                        {
+                                            points -= 40;
+                                            cleanList.Add(i);
+                                        }
+                                    }
+                                    else if (entityList[p] is Bullet)
+                                    {
+                                        if (entityList[i] is Boss)
+                                        {
+                                            cleanList.Add(p);
+                                            //boss hit event
+                                        }
+                                        else if (entityList[i] is Asteroid)
+                                        {
+                                            cleanList.Add(i);
+                                            cleanList.Add(p);
+                                            points += 15;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+                else
+                {
+                    cleanList.Add(p);
+                }
+                entityList[p].Update();
             }
-            if (points > highscore)
+            cleanList = cleanList.Distinct().ToList();
+            cleanList.Sort();
+            for (int i = cleanList.Count-1; i > 0; i--)
             {
-                highscore = points;
+                entityList.RemoveAt(cleanList[i]);
             }
+            cleanList.Clear();
         }
-        private bool CheckBounds(Vector2 position, Texture2D tex, int offset)
+        private bool CheckBounds(Entity obj)
         {
+            int offset = 50;
+            Vector2 position = obj.position;
+            Texture2D tex = obj.tex;
+
             int height = game.GraphicsDevice.Viewport.Height;
             int width = game.GraphicsDevice.Viewport.Width;
 
@@ -262,7 +353,7 @@ namespace AsteroidShip
         }
         public void CreateBullet(Vector2 direction)
         {
-            if (points > 80)
+            if (points > 1300)
             {
                 weaponMode = 3;
             }
@@ -276,39 +367,34 @@ namespace AsteroidShip
             }
             if (weaponMode == 1)
             {
-                bulletList.Add(new Bullet(game, direction, new Vector2(0,0)));
+                entityList.Add(new Bullet(game, direction, new Vector2(0,0)));
             }else if(weaponMode == 2){
-                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f)));
-                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f)));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f)));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f)));
             }
             else if (weaponMode == 3)
             {
-                bulletList.Add(new Bullet(game, direction, new Vector2(0, 0)));
-                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f)));
-                bulletList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f)));
+                entityList.Add(new Bullet(game, direction, new Vector2(0, 0)));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f)));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f)));
             }
         }
         public void CreateAsteroid(int side, int amount)
         {
             for (int i = 0; i < amount; i++)
             {
-                asteroidList.Add(new Asteroid(game, side));
+                entityList.Add(new Asteroid(game, side));
             }
         }
         public void CreateBoss()
         {
-            boss = new Boss(game);
-            bossHealth = int.MaxValue;
+            entityList.Add(new Boss(game));
         }
         public void Draw(SpriteBatch batch)
         {
-            for (int i = 0; i < bulletList.Count; i++)
+            foreach (Entity item in entityList)
             {
-                bulletList[i].Draw(batch);
-            }
-            for (int i = 0; i < asteroidList.Count; i++)
-            {
-                asteroidList[i].Draw(batch);
+                item.Draw(batch);
             }
             if (points < 0)
             {
@@ -317,10 +403,6 @@ namespace AsteroidShip
             else
             {
                 score = "Score = " + points.ToString();
-            }
-            if (boss != null)
-            {
-                boss.Draw(batch);
             }
             batch.DrawString(verdana, countDown, new Vector2((game.GraphicsDevice.Viewport.Width / 2)-10, (game.GraphicsDevice.Viewport.Height / 3) * 2), Color.White);
             batch.DrawString(verdana, score, new Vector2((game.GraphicsDevice.Viewport.Width / 10), (game.GraphicsDevice.Viewport.Height / 10) * 2), Color.White);
