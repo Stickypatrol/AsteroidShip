@@ -60,17 +60,17 @@ namespace AsteroidShip
         }
         private void NewLevel()
         {
-            if (level == 6)
+            if (level == 0)
+            {
+                BeginLevel();
+            }
+            else if (level == 6)
             {
                 BossLevel();
             }
-            else if (level == 1 && level + 1 % 2 == 0)
+            else if (level == 1 || level + 1 % 2 == 0)
             {
                 EasyLevel();
-            }
-            else if(level == 0)
-            {
-                BeginLevel();
             }
             else
             {
@@ -81,6 +81,7 @@ namespace AsteroidShip
         private void BeginLevel()
         {
             leveltype = "Get Ready!";
+            Console.WriteLine("begin");
             StartTime();
             triggerTime = 5;
             interval = 0;
@@ -91,6 +92,7 @@ namespace AsteroidShip
         private void EasyLevel()
         {
             leveltype = "Easy level";
+            Console.WriteLine("easy");
             StartTime();
             triggerTime = 20;
             interval = 500;
@@ -101,6 +103,7 @@ namespace AsteroidShip
         private void HardLevel()
         {
             leveltype = "Hard level";
+            Console.WriteLine("hard");
             StartTime();
             triggerTime = 10;
             interval = 100;
@@ -111,6 +114,7 @@ namespace AsteroidShip
         private void BossLevel()
         {
             leveltype = "Boss level";
+            Console.WriteLine("boss");
             triggerTime = -1;
             timerunning = false;
             interval = 0;

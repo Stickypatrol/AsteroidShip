@@ -41,6 +41,7 @@ namespace AsteroidShip
         }
         public void Update()
         {
+            Console.WriteLine(entityList.Count);
             BaseSpeed();
             ObjectUpdate();
             levelType = game.levelController.leveltype;
@@ -277,8 +278,7 @@ namespace AsteroidShip
                             if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < 300) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < 300)
                             {
                                 if (Collision(entityList[p], entityList[i]))
-                                {//if there is a collision
-                                    //check the datatype and react accordingly
+                                {
                                     if (entityList[p] is Ship)
                                     {
                                         if (entityList[i] is Boss)
@@ -296,7 +296,6 @@ namespace AsteroidShip
                                         if (entityList[i] is Boss)
                                         {
                                             cleanList.Add(p);
-                                            //boss hit event
                                         }
                                         else if (entityList[i] is Asteroid)
                                         {
