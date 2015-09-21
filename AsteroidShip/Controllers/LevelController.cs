@@ -39,7 +39,7 @@ namespace AsteroidShip
         {
             return triggerTime - (totalTime - startTime);
         }
-        public void StartTime()
+        private void StartTime()
         {
             startTime = totalTime;
         }
@@ -68,15 +68,16 @@ namespace AsteroidShip
             {
                 BossLevel();
             }
-            else if (level == 1 || level + 1 % 2 == 0)
-            {
-                EasyLevel();
-            }
-            else
+            else if (level% 2 == 0)
             {
                 HardLevel();
             }
+            else
+            {
+                EasyLevel();
+            }
             level++;
+            Console.WriteLine(CountDown());
         }
         private void BeginLevel()
         {
@@ -108,6 +109,7 @@ namespace AsteroidShip
             triggerTime = 10;
             interval = 100;
             side = rand.Next(0, 4);
+            Console.WriteLine(side);
             amount = 1;
             game.objectController.isspawning = false;
         }

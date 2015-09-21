@@ -41,7 +41,6 @@ namespace AsteroidShip
         }
         public void Update()
         {
-            Console.WriteLine(entityList.Count);
             BaseSpeed();
             ObjectUpdate();
             levelType = game.levelController.leveltype;
@@ -140,14 +139,16 @@ namespace AsteroidShip
                     else
                     {
                         deltaY = 0;
-                    } if (A[i].X - A[(i + 1) % 4].X != 0)
+                    }
+                    if (A[i].X - A[(i + 1) % 4].X != 0)
                     {
                         deltaX = A[i].X - A[(i + 1) % 4].X;
                     }
                     else
                     {
                         deltaX = 0;
-                    } if (deltaY == 0)
+                    }
+                    if (deltaY == 0)
                     {
                         if (A[i].Y > B[p].Y)
                         {
@@ -182,7 +183,8 @@ namespace AsteroidShip
                             sides[i] = -1;
                         }
                     }
-                } for (int i = 0; i < sides.Length; i++)
+                }
+                for (int i = 0; i < sides.Length; i++)
                 {
                     if (sides.Sum() == 0)
                     {
@@ -195,7 +197,8 @@ namespace AsteroidShip
                     {
                         break;
                     }//2nd part, compares the rectangles the other way around
-                } for (int i = 0; i < B.Length; i++)
+                }
+                for (int i = 0; i < B.Length; i++)
                 {
                     float deltaY = 0;
                     float deltaX = 0;
@@ -213,7 +216,8 @@ namespace AsteroidShip
                     else
                     {
                         deltaX = 0;
-                    } if (deltaY == 0)
+                    }
+                    if (deltaY == 0)
                     {
                         if (B[i].Y > A[p].Y)
                         {
@@ -248,7 +252,8 @@ namespace AsteroidShip
                             sides[i] = -1;
                         }
                     }
-                } for (int i = 0; i < sides.Length; i++)
+                }
+                for (int i = 0; i < sides.Length; i++)
                 {
                     if (sides.Sum() == 0)
                     {
@@ -260,7 +265,7 @@ namespace AsteroidShip
                     else
                     {
                         break;
-                    }
+                    }//2nd part, compares the rectangles the other way around
                 }
             }
             return false;
@@ -269,13 +274,16 @@ namespace AsteroidShip
         {
             for (int p = 0; p < entityList.Count; p++)
             {
-                if (!CheckBounds(entityList[p]))
+                if(entityList[p] == null){
+                    cleanList.Add(p);
+                }
+                else if (!CheckBounds(entityList[p]))
                 {
                     for (int i = 0; i < entityList.Count; i++)
                     {
                         if (i != p)
                         {
-                            if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < 300) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < 300)
+                            if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < 300) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < 300)//this is just some pruning
                             {
                                 if (Collision(entityList[p], entityList[i]))
                                 {
@@ -304,6 +312,13 @@ namespace AsteroidShip
                                             points += 15;
                                         }
                                     }
+                                    else if (entityList[p] is Bomb)
+                                    {
+                                        if (entityList[i] is Asteroid)
+                                        {
+                                            cleanList.Add(i);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -313,15 +328,30 @@ namespace AsteroidShip
                 {
                     cleanList.Add(p);
                 }
-                entityList[p].Update();
+                if (entityList[p] is IDestructible)
+                {
+                    if (entityList[p].time > 25)
+                    {
+                        cleanList.Add(p);
+                    }
+                    else
+                    {
+                        entityList[p].Update();
+                    }
+                }
+                else
+                {
+                    entityList[p].Update();
+                }
             }
             cleanList = cleanList.Distinct().ToList();
             cleanList.Sort();
-            for (int i = cleanList.Count-1; i > 0; i--)
+            for (int i = cleanList.Count-1; i >= 0; i--)
             {
                 entityList.RemoveAt(cleanList[i]);
             }
             cleanList.Clear();
+            Console.WriteLine(entityList.Count);
         }
         private bool CheckBounds(Entity obj)
         {
@@ -350,13 +380,13 @@ namespace AsteroidShip
             }
             return false;
         }
-        public void CreateBullet(Vector2 direction)
+        public void CreateBullet(Vector2 direction, Vector2 position)
         {
-            if (points > 1300)
+            if (points > 1700)
             {
                 weaponMode = 3;
             }
-            else if (points > 400)
+            else if (points > 800)
             {
                 weaponMode = 2;
             }
@@ -366,17 +396,21 @@ namespace AsteroidShip
             }
             if (weaponMode == 1)
             {
-                entityList.Add(new Bullet(game, direction, new Vector2(0,0)));
+                entityList.Add(new Bullet(game, direction, new Vector2(0,0), position));
             }else if(weaponMode == 2){
-                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f)));
-                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f)));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f), position));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f), position));
             }
             else if (weaponMode == 3)
             {
-                entityList.Add(new Bullet(game, direction, new Vector2(0, 0)));
-                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f)));
-                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f)));
+                entityList.Add(new Bullet(game, direction, new Vector2(0, 0), position));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f), position));
+                entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f), position));
             }
+        }
+        public void CreateBomb(Vector2 direction)
+        {
+            entityList.Add(new Bomb(game, direction));
         }
         public void CreateAsteroid(int side, int amount)
         {

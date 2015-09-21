@@ -12,7 +12,7 @@ namespace AsteroidShip
     {
         Game1 game;
         InputController inputController;
-        Vector2 newpos;
+        Vector2 direction;
 
 
         public PlayerControls(Game1 _game)
@@ -28,9 +28,15 @@ namespace AsteroidShip
         }
         private void ShootControl()
         {
-            if (inputController.getMouseClick() || inputController.getTriggerClick())
+            if (inputController.getLeftMouseClick() || inputController.getRightTrigger())
             {
-                game.objectController.CreateBullet(new Vector2(newpos.X - game.GraphicsDevice.Viewport.Width/2, newpos.Y - game.GraphicsDevice.Viewport.Height/2));
+                game.objectController.CreateBullet(new Vector2(direction.X - game.GraphicsDevice.Viewport.Width/2, direction.Y - game.GraphicsDevice.Viewport.Height/2), 
+                    new Vector2(game.GraphicsDevice.Viewport.Width / 2 + game.objectController.ship.tex.Width / 2, game.GraphicsDevice.Viewport.Height / 2 + game.objectController.ship.tex.Height / 2) -
+                    new Vector2(game.objectController.ship.tex.Width / 2, game.objectController.ship.tex.Height / 2));
+            }
+            if (inputController.getRightMouseClick() || inputController.getLeftTrigger())
+            {
+                game.objectController.CreateBomb(new Vector2(direction.X - game.GraphicsDevice.Viewport.Width/2, direction.Y - game.GraphicsDevice.Viewport.Height/2));
             }
         }
         private void MouseControls(Vector2 mousePos)
@@ -44,23 +50,23 @@ namespace AsteroidShip
             float y = (float)Math.Sqrt(Math.Pow(75, 2) - x * Math.Abs(x));
             if (mousePos.X >= 0 && mousePos.Y >= 0)
             {
-                newpos = new Vector2((int)x + width, (int)y + height);
-                game.world.target.position = newpos;
+                direction = new Vector2((int)x + width, (int)y + height);
+                game.world.target.position = direction;
             }
             else if (mousePos.X >= 0 && mousePos.Y < 0)
             {
-                newpos = new Vector2((int)x + width, (int)-y + height);
-                game.world.target.position = newpos;
+                direction = new Vector2((int)x + width, (int)-y + height);
+                game.world.target.position = direction;
             }
             else if (mousePos.X < 0 && mousePos.Y < 0)
             {
-                newpos = new Vector2((int)-x + width, (int)-y + height);
-                game.world.target.position = newpos;
+                direction = new Vector2((int)-x + width, (int)-y + height);
+                game.world.target.position = direction;
             }
             else if (mousePos.X < 0 && mousePos.Y >= 0)
             {
-                newpos = new Vector2((int)-x + width, (int)y + height);
-                game.world.target.position = newpos;
+                direction = new Vector2((int)-x + width, (int)y + height);
+                game.world.target.position = direction;
             }
         }
     }

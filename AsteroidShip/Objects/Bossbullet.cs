@@ -7,23 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AsteroidShip
 {
-    class Bullet : Entity
+    class Bossbullet : Entity
     {
-        InputController inputController;
-        ObjectController objectController;
-
-        public Bullet(Game1 _game, Vector2 direction, Vector2 offset, Vector2 _position)
+        public Bossbullet(Game1 _game, Vector2 _position, Vector2 direction)
         {
             game = _game;
             tex = game.Content.Load<Texture2D>("bullet");
-            position = _position + offset;
+            position = _position;
             rotation = 0f;
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
-            speed = new Vector2(direction.X/8, direction.Y/8);
-            inputController = game.inputController;
-            objectController = game.objectController;
+            speed = new Vector2(direction.X / 8, direction.Y / 8);
         }
         public override void Update()
         {

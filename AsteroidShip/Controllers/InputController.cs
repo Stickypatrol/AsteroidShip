@@ -77,7 +77,7 @@ namespace AsteroidShip
         {
             return new Vector2(curMouse.X, curMouse.Y);
         }
-        public bool getTriggerClick()
+        public bool getRightTrigger()
         {
             if((curGamePad.IsButtonDown(Buttons.RightTrigger) && prevGamePad.IsButtonUp(Buttons.RightTrigger)) || 
                 curGamePad.IsButtonDown(Buttons.RightShoulder) && prevGamePad.IsButtonUp(Buttons.RightShoulder)){
@@ -85,9 +85,26 @@ namespace AsteroidShip
             }
             return false;
         }
-        public bool getMouseClick()
+        public bool getLeftTrigger()
+        {
+            if ((curGamePad.IsButtonDown(Buttons.LeftTrigger) && prevGamePad.IsButtonUp(Buttons.LeftTrigger)) ||
+                curGamePad.IsButtonDown(Buttons.LeftShoulder) && prevGamePad.IsButtonUp(Buttons.LeftShoulder))
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool getLeftMouseClick()
         {
             if(curMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released){
+                return true;
+            }
+            return false;
+        }
+        public bool getRightMouseClick()
+        {
+            if (curMouse.RightButton == ButtonState.Pressed && prevMouse.RightButton == ButtonState.Released)
+            {
                 return true;
             }
             return false;
