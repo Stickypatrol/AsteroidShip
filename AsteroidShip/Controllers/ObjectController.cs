@@ -274,10 +274,7 @@ namespace AsteroidShip
         {
             for (int p = 0; p < entityList.Count; p++)
             {
-                if(entityList[p] == null){
-                    cleanList.Add(p);
-                }
-                else if (!CheckBounds(entityList[p]))
+                if (!CheckBounds(entityList[p]))
                 {
                     for (int i = 0; i < entityList.Count; i++)
                     {
@@ -296,6 +293,11 @@ namespace AsteroidShip
                                         else if (entityList[i] is Asteroid)
                                         {
                                             points -= 40;
+                                            cleanList.Add(i);
+                                        }
+                                        else if (entityList[i] is Bossbullet)
+                                        {
+                                            points -= 25;
                                             cleanList.Add(i);
                                         }
                                     }
@@ -351,10 +353,13 @@ namespace AsteroidShip
                 entityList.RemoveAt(cleanList[i]);
             }
             cleanList.Clear();
-            Console.WriteLine(entityList.Count);
         }
         private bool CheckBounds(Entity obj)
         {
+            if (obj is Boss || obj is Bossbullet)
+            {
+                return false;
+            }
             int offset = 50;
             Vector2 position = obj.position;
             Texture2D tex = obj.tex;
@@ -407,6 +412,10 @@ namespace AsteroidShip
                 entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f * -1f, direction.X * 0.2f), position));
                 entityList.Add(new Bullet(game, direction, new Vector2(direction.Y * 0.2f, direction.X * 0.2f * -1f), position));
             }
+        }
+        public void CreateBossBullet(Vector2 position, Vector2 direction)
+        {
+            entityList.Add(new Bossbullet(game, position, direction));
         }
         public void CreateBomb(Vector2 direction)
         {

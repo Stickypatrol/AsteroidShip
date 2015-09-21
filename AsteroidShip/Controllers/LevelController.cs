@@ -77,14 +77,13 @@ namespace AsteroidShip
                 EasyLevel();
             }
             level++;
-            Console.WriteLine(CountDown());
         }
         private void BeginLevel()
         {
             leveltype = "Get Ready!";
             Console.WriteLine("begin");
             StartTime();
-            triggerTime = 5;
+            triggerTime = 1;
             interval = 0;
             side = -1;
             amount = 0;
@@ -95,7 +94,7 @@ namespace AsteroidShip
             leveltype = "Easy level";
             Console.WriteLine("easy");
             StartTime();
-            triggerTime = 20;
+            triggerTime = 0;
             interval = 500;
             side = -1;
             amount = 1;
@@ -106,10 +105,9 @@ namespace AsteroidShip
             leveltype = "Hard level";
             Console.WriteLine("hard");
             StartTime();
-            triggerTime = 10;
+            triggerTime = 0;
             interval = 100;
             side = rand.Next(0, 4);
-            Console.WriteLine(side);
             amount = 1;
             game.objectController.isspawning = false;
         }

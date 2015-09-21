@@ -18,7 +18,7 @@ namespace AsteroidShip
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
-            speed = new Vector2(direction.X / 8, direction.Y / 8);
+            speed = new Vector2(direction.X*10, direction.Y*10);
         }
         public override void Update()
         {
