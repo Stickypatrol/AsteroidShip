@@ -20,7 +20,7 @@ namespace AsteroidShip
             rotation = 0f;
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
-            health = 100;
+            health = 50;
         }
         public override void Update()
         {

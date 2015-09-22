@@ -280,7 +280,7 @@ namespace AsteroidShip
                     {
                         if (i != p)
                         {
-                            if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < 300) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < 300)//this is just some pruning
+                            if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < entityList[p].tex.Width + entityList[i].tex.Width * 2) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < entityList[p].tex.Width + entityList[i].tex.Width * 2)//this is just some pruning
                             {
                                 if (Collision(entityList[p], entityList[i]))
                                 {
