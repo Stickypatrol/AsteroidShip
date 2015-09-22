@@ -13,7 +13,7 @@ namespace AsteroidShip
         public Boss(Game1 _game)
         {
             game = _game;
-            tex = game.Content.Load<Texture2D>("Boss");
+            tex = game.Content.Load<Texture2D>("bossguiseppe");
             position = new Vector2(game.GraphicsDevice.Viewport.Width+200, game.GraphicsDevice.Viewport.Height/2 - tex.Height/2);
             origin = new Vector2(tex.Width/2f, tex.Height/2f);
             speed = new Vector2(0, 0);
