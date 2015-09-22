@@ -24,16 +24,18 @@ namespace AsteroidShip
             triggerTime = 0;
             rand = new Random();
             leveltype = "Get Ready!";
+            totalTime = 0;
         }
         public void Update(GameTime _gameTime)
         {
             gameTime = _gameTime;
-            totalTime = gameTime.TotalGameTime.Seconds;
+            totalTime = (int)gameTime.TotalGameTime.TotalSeconds;
             if (timerunning)
             {
                 Timer();
                 SpawnRate();
             }
+            Console.WriteLine(totalTime);
         }
         public int CountDown()
         {
@@ -83,7 +85,7 @@ namespace AsteroidShip
             leveltype = "Get Ready!";
             Console.WriteLine("begin");
             StartTime();
-            triggerTime = 1;
+            triggerTime = 5;
             interval = 0;
             side = -1;
             amount = 0;
@@ -94,7 +96,7 @@ namespace AsteroidShip
             leveltype = "Easy level";
             Console.WriteLine("easy");
             StartTime();
-            triggerTime = 0;
+            triggerTime = 1;
             interval = 500;
             side = -1;
             amount = 1;
@@ -105,7 +107,7 @@ namespace AsteroidShip
             leveltype = "Hard level";
             Console.WriteLine("hard");
             StartTime();
-            triggerTime = 0;
+            triggerTime = 1;
             interval = 100;
             side = rand.Next(0, 4);
             amount = 1;

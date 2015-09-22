@@ -7,8 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AsteroidShip
 {
-    class Boss : Entity
+    class Boss : Entity, IDestructible
     {
+
         public Boss(Game1 _game)
         {
             game = _game;
@@ -19,6 +20,7 @@ namespace AsteroidShip
             rotation = 0f;
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
+            health = 100;
         }
         public override void Update()
         {
@@ -34,6 +36,17 @@ namespace AsteroidShip
             position += game.objectController.basespeed;
             rotation += 0.01f;
             rect = new Rectangle((int)position.X, (int)position.Y, 0, 0);
+        }
+        public void Explode()
+        {
+            if (health <= 0)
+            {
+                for (float i = 0; i < 2; i += 0.1f)
+                {
+                    game.objectController.CreateBossBullet(new Vector2(-25f * (float)(Math.Sin(Math.PI * i)), 25f * (float)(Math.Cos(Math.PI * i))), new Vector2(position.X + tex.Width / 2, position.Y + tex.Height / 2));
+                }
+            }
+            health--;
         }
         private void Shoot()
         {

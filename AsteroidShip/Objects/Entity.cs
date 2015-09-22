@@ -14,8 +14,7 @@ namespace AsteroidShip
         public Vector2 position, speed, origin;
         public Rectangle rect, sourceRect;
         public float rotation, scale, multiplier;
-        public int time;
-
+        public int time, health;
 
         public Entity() { }
         public virtual void Update()

@@ -306,6 +306,7 @@ namespace AsteroidShip
                                         if (entityList[i] is Boss)
                                         {
                                             cleanList.Add(p);
+                                            entityList[i].health--;
                                         }
                                         else if (entityList[i] is Asteroid)
                                         {
@@ -330,9 +331,20 @@ namespace AsteroidShip
                 {
                     cleanList.Add(p);
                 }
-                if (entityList[p] is IDestructible)
+                if (entityList[p] is Bomb)
                 {
                     if (entityList[p].time > 25)
+                    {
+                        cleanList.Add(p);
+                    }
+                    else
+                    {
+                        entityList[p].Update();
+                    }
+                }
+                else if (entityList[p] is Boss)
+                {
+                    if (entityList[p].health < 0)
                     {
                         cleanList.Add(p);
                     }
