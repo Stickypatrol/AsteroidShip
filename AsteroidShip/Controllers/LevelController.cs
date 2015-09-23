@@ -89,7 +89,7 @@ namespace AsteroidShip
             interval = 0;
             side = -1;
             amount = 0;
-            game.objectController.isspawning = false;
+            game.objectController.isSpawning = false;
         }
         private void EasyLevel()
         {
@@ -100,7 +100,7 @@ namespace AsteroidShip
             interval = 500;
             side = -1;
             amount = 1;
-            game.objectController.isspawning = true;
+            game.objectController.isSpawning = true;
         }
         private void HardLevel()
         {
@@ -111,7 +111,7 @@ namespace AsteroidShip
             interval = 100;
             side = rand.Next(0, 4);
             amount = 1;
-            game.objectController.isspawning = false;
+            game.objectController.isSpawning = false;
         }
         private void BossLevel()
         {
@@ -120,7 +120,7 @@ namespace AsteroidShip
             triggerTime = -1;
             timerunning = false;
             interval = 0;
-            game.objectController.isspawning = false;
+            game.objectController.isSpawning = false;
             game.objectController.CreateBoss();
         }
     }

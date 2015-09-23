@@ -9,7 +9,6 @@ namespace AsteroidShip
 {
     public class Ship : Entity
     {
-        int health;
         public Ship(Game1 _game, Vector2 _position, int _health, float _rotation)
         {
             game = _game;
@@ -21,6 +20,7 @@ namespace AsteroidShip
             scale = 1f;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
             speed = new Vector2(0, 0);
+            radius = (float)Math.Sqrt(Math.Pow(tex.Height, 2) + Math.Pow(tex.Width, 2));
         }
         public override void Update()
         {

@@ -47,7 +47,6 @@ namespace AsteroidShip
         }
         public override void Update()
         {
-            //rotation += 0.01f;
             position += speed;
             position += game.objectController.basespeed;
             rect = new Rectangle((int)position.X, (int)position.Y, tex.Width, tex.Height);

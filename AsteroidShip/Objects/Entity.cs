@@ -13,8 +13,8 @@ namespace AsteroidShip
         public Texture2D tex;
         public Vector2 position, speed, origin;
         public Rectangle rect, sourceRect;
-        public float rotation, scale, multiplier;
-        public int time, health;
+        public float rotation, scale, multiplier, radius;
+        public int time, health, sizeX, sizeY, column, row;
 
         public Entity() { }
         public virtual void Update()

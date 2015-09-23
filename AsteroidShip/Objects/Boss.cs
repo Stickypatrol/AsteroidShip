@@ -24,7 +24,6 @@ namespace AsteroidShip
         }
         public override void Update()
         {
-            Console.WriteLine("update");
             if (time > 60)
             {
                 Shoot();

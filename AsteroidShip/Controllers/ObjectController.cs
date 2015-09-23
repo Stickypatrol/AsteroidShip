@@ -12,7 +12,7 @@ namespace AsteroidShip
     public class ObjectController
     {
         public Vector2 basespeed;
-        public bool isspawning;
+        public bool isSpawning;
         public Ship ship;
         Game1 game;
         Random rand = new Random();
@@ -111,6 +111,7 @@ namespace AsteroidShip
         }
         private bool Collision(Entity a, Entity b)
         {
+            if()
             int[] sides = new int[] { 0, 0, 0, 0 };
             Vector2[] A = new Vector2[4];
             Vector2[] B = new Vector2[4];
@@ -118,14 +119,11 @@ namespace AsteroidShip
             Vector2 originB = new Vector2(b.position.X, b.position.Y);
             float radiusA = (float)Math.Sqrt(2f * Math.Pow(a.tex.Width, 2)) / 2;
             float radiusB = (float)Math.Sqrt(2f * Math.Pow(b.tex.Width, 2)) / 2;
-            A[0] = new Vector2(radiusA * (float)Math.Cos(a.rotation + (Math.PI / 4) % (2 * Math.PI)), radiusA * (float)Math.Sin(a.rotation + (Math.PI / 4) % (2 * Math.PI))) + a.position;
-            A[2] = new Vector2((A[0].X - originA.X) * -1 + originA.X, (A[0].Y - originA.Y) * -1 + originA.Y);
-            A[1] = new Vector2(originA.X + A[0].Y - originA.Y, originA.Y + -(A[0].X - originA.X));
-            A[3] = new Vector2((A[1].X - originA.X) * -1 + originA.X, (A[1].Y - originA.Y) * -1 + originA.Y);
-            B[0] = new Vector2(radiusB * (float)Math.Cos(b.rotation + (Math.PI / 4) % (2 * Math.PI)), radiusB * (float)Math.Sin(b.rotation + (Math.PI / 4) % (2 * Math.PI))) + b.position;
-            B[2] = new Vector2((B[0].X - originB.X) * -1 + originB.X, (B[0].Y - originB.Y) * -1 + originB.Y);
-            B[1] = new Vector2(originB.X + B[0].Y - originB.Y, originB.Y + -(B[0].X - originB.X));
-            B[3] = new Vector2((B[1].X - originB.X) * -1 + originB.X, (B[1].Y - originB.Y) * -1 + originB.Y);
+            for (int i = 0; i < A.Length; i++)
+            {
+                A[i] = new Vector2(radiusA * (float)Math.Cos(a.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), radiusA * (float)Math.Sin(a.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + a.position;
+                B[i] = new Vector2(radiusB * (float)Math.Cos(b.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), radiusB * (float)Math.Sin(b.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + b.position;
+            }
             for (int p = 0; p < B.Length; p++)
             {//first part, compares rectangle A to coordinates from rectangle B
                 for (int i = 0; i < A.Length; i++)
@@ -270,66 +268,88 @@ namespace AsteroidShip
             }
             return false;
         }
+        private int CollisionEventHandler(Entity A, Entity B)
+        {//this method handles the collision event, it takes the cleanList and returns it filled with shit that has to be cleaned up
+            int result = 0;
+            if (A is Ship)
+            {
+                if (B is Boss)
+                {
+                    points -= 100;
+                }
+                else if (B is Asteroid)
+                {
+                    points -= 40;
+                }
+                else if (B is Bossbullet)
+                {
+                    points -= 25;
+                    result = 2;
+                }
+            }
+            else if (A is Bullet)
+            {
+                if (B is Boss)
+                {
+                    result = 1;
+                    B.health--;
+                }
+                else if (B is Asteroid)
+                {
+                    result = 3;
+                    points += 15;
+                    entityList.Add(new Explosion(game, B.position, false));
+                }
+            }
+            else if (A is Bomb)
+            {
+                if (B is Asteroid)
+                {
+                    result = 2;
+                }
+            }
+            //if A is to be removed then 1
+            //if B '' then 2
+            //if both '' then 3
+            //if nothing then 0
+            return result;
+        }
         private void ObjectUpdate()
         {
+            for (int i = 0; i < entityList.Count; i++)
+            {
+                if (!CheckBounds(entityList[i]))
+                {
+                    cleanList.Add(i);
+                }
+            }
             for (int p = 0; p < entityList.Count; p++)
             {
-                if (!CheckBounds(entityList[p]))
+                for (int i = 0; i < entityList.Count; i++)
                 {
-                    for (int i = 0; i < entityList.Count; i++)
+                    if (i != p)
                     {
-                        if (i != p)
+                        if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < entityList[p].tex.Width + entityList[i].tex.Width * 2) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < entityList[p].tex.Width + entityList[i].tex.Width * 2)//this is just some pruning
                         {
-                            if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < entityList[p].tex.Width + entityList[i].tex.Width * 2) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < entityList[p].tex.Width + entityList[i].tex.Width * 2)//this is just some pruning
+                            if (Collision(entityList[p], entityList[i]))
                             {
-                                if (Collision(entityList[p], entityList[i]))
+                                int result = CollisionEventHandler(entityList[p], entityList[i]);
+                                if (result == 1)
                                 {
-                                    if (entityList[p] is Ship)
-                                    {
-                                        if (entityList[i] is Boss)
-                                        {
-                                            points -= 100;
-                                        }
-                                        else if (entityList[i] is Asteroid)
-                                        {
-                                            points -= 40;
-                                            cleanList.Add(i);
-                                        }
-                                        else if (entityList[i] is Bossbullet)
-                                        {
-                                            points -= 25;
-                                            cleanList.Add(i);
-                                        }
-                                    }
-                                    else if (entityList[p] is Bullet)
-                                    {
-                                        if (entityList[i] is Boss)
-                                        {
-                                            cleanList.Add(p);
-                                            entityList[i].health--;
-                                        }
-                                        else if (entityList[i] is Asteroid)
-                                        {
-                                            cleanList.Add(i);
-                                            cleanList.Add(p);
-                                            points += 15;
-                                        }
-                                    }
-                                    else if (entityList[p] is Bomb)
-                                    {
-                                        if (entityList[i] is Asteroid)
-                                        {
-                                            cleanList.Add(i);
-                                        }
-                                    }
+                                    cleanList.Add(p);
+                                }
+                                else if (result == 2)
+                                {
+                                    cleanList.Add(i);
+                                }
+                                else if (result == 3)
+                                {
+                                    cleanList.Add(p);
+                                    cleanList.Add(i);
                                 }
                             }
                         }
                     }
-                }
-                else
-                {
-                    cleanList.Add(p);
                 }
                 if (entityList[p] is Bomb)
                 {
