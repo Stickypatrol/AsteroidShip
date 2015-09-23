@@ -24,6 +24,7 @@ namespace AsteroidShip
             speed = new Vector2(direction.X/8, direction.Y/8);
             inputController = game.inputController;
             objectController = game.objectController;
+            radius = (float)Math.Sqrt(Math.Pow(tex.Height, 2) + Math.Pow(tex.Width, 2));
         }
         public override void Update()
         {

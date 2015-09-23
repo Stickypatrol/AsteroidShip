@@ -111,19 +111,20 @@ namespace AsteroidShip
         }
         private bool Collision(Entity a, Entity b)
         {
-            if()
+            if (a.position.X - b.position.X > a.radius + b.radius && a.position.Y - b.position.Y > a.radius + b.radius)
+            {
+                return false;
+                //this is the pruning
+            }
             int[] sides = new int[] { 0, 0, 0, 0 };
             Vector2[] A = new Vector2[4];
             Vector2[] B = new Vector2[4];
-            Vector2 originA = new Vector2(a.position.X, a.position.Y);
-            Vector2 originB = new Vector2(b.position.X, b.position.Y);
-            float radiusA = (float)Math.Sqrt(2f * Math.Pow(a.tex.Width, 2)) / 2;
-            float radiusB = (float)Math.Sqrt(2f * Math.Pow(b.tex.Width, 2)) / 2;
             for (int i = 0; i < A.Length; i++)
             {
-                A[i] = new Vector2(radiusA * (float)Math.Cos(a.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), radiusA * (float)Math.Sin(a.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + a.position;
-                B[i] = new Vector2(radiusB * (float)Math.Cos(b.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), radiusB * (float)Math.Sin(b.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + b.position;
+                A[i] = new Vector2(a.radius * (float)Math.Cos(a.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), a.radius * (float)Math.Sin(a.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + a.position;
+                B[i] = new Vector2(b.radius * (float)Math.Cos(b.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), b.radius* (float)Math.Sin(b.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + b.position;
             }
+
             for (int p = 0; p < B.Length; p++)
             {//first part, compares rectangle A to coordinates from rectangle B
                 for (int i = 0; i < A.Length; i++)
@@ -314,6 +315,24 @@ namespace AsteroidShip
             //if nothing then 0
             return result;
         }
+        private bool TimingHandler(Entity entity)
+        {
+            if (entity is Bomb)
+            {
+                if (entity.time > 25)
+                {
+                    return true;
+                }
+            }
+            else if (entity is Boss)
+            {
+                if (entity.health < 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private void ObjectUpdate()
         {
             for (int i = 0; i < entityList.Count; i++)
@@ -329,49 +348,28 @@ namespace AsteroidShip
                 {
                     if (i != p)
                     {
-                        if ((Math.Abs(entityList[p].position.X - entityList[i].position.X) < entityList[p].tex.Width + entityList[i].tex.Width * 2) && Math.Abs(entityList[p].position.Y - entityList[i].position.Y) < entityList[p].tex.Width + entityList[i].tex.Width * 2)//this is just some pruning
+                        if (Collision(entityList[p], entityList[i]))
                         {
-                            if (Collision(entityList[p], entityList[i]))
+                            int result = CollisionEventHandler(entityList[p], entityList[i]);
+                            if (result == 1)
                             {
-                                int result = CollisionEventHandler(entityList[p], entityList[i]);
-                                if (result == 1)
-                                {
-                                    cleanList.Add(p);
-                                }
-                                else if (result == 2)
-                                {
-                                    cleanList.Add(i);
-                                }
-                                else if (result == 3)
-                                {
-                                    cleanList.Add(p);
-                                    cleanList.Add(i);
-                                }
+                                cleanList.Add(p);
+                            }
+                            else if (result == 2)
+                            {
+                                cleanList.Add(i);
+                            }
+                            else if (result == 3)
+                            {
+                                cleanList.Add(p);
+                                cleanList.Add(i);
                             }
                         }
                     }
                 }
-                if (entityList[p] is Bomb)
+                if (TimingHandler(entityList[p]))
                 {
-                    if (entityList[p].time > 25)
-                    {
-                        cleanList.Add(p);
-                    }
-                    else
-                    {
-                        entityList[p].Update();
-                    }
-                }
-                else if (entityList[p] is Boss)
-                {
-                    if (entityList[p].health < 0)
-                    {
-                        cleanList.Add(p);
-                    }
-                    else
-                    {
-                        entityList[p].Update();
-                    }
+                    cleanList.Add(p);
                 }
                 else
                 {

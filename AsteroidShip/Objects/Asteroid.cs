@@ -44,6 +44,7 @@ namespace AsteroidShip
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
             inputController = game.inputController;
             objectController = game.objectController;
+            radius = (float)Math.Sqrt(Math.Pow(tex.Height, 2) + Math.Pow(tex.Width, 2));
         }
         public override void Update()
         {

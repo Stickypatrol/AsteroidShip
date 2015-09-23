@@ -25,6 +25,7 @@ namespace AsteroidShip
             inputController = game.inputController;
             objectController = game.objectController;
             time = 0;
+            radius = (float)Math.Sqrt(Math.Pow(tex.Height, 2) + Math.Pow(tex.Width, 2));
         }
         public override void Update()
         {

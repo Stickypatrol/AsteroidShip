@@ -21,6 +21,7 @@ namespace AsteroidShip
             sourceRect = new Rectangle(0, 0, tex.Width, tex.Height);
             scale = 1f;
             health = 50;
+            radius = (float)Math.Sqrt(Math.Pow(tex.Height, 2) + Math.Pow(tex.Width, 2));
         }
         public override void Update()
         {
