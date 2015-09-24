@@ -14,8 +14,8 @@ namespace AsteroidShip
         public Vector2 basespeed;
         public bool isSpawning;
         public Ship ship;
+        public Random rand = new Random();
         Game1 game;
-        Random rand = new Random();
         InputController inputController;
         SpriteFont verdana;
         List<Entity> entityList;
@@ -119,14 +119,16 @@ namespace AsteroidShip
             int[] sides = new int[] { 0, 0, 0, 0 };
             Vector2[] A = new Vector2[4];
             Vector2[] B = new Vector2[4];
-            for (int i = 0; i < A.Length; i++)
+            for (int i = 0; i < 4; i++)
             {
-                A[i] = new Vector2(a.radius * (float)Math.Cos(a.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), a.radius * (float)Math.Sin(a.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + a.position;
-                B[i] = new Vector2(b.radius * (float)Math.Cos(b.rotation + (Math.PI /4*i+1) % (2 * Math.PI)), b.radius* (float)Math.Sin(b.rotation + (Math.PI / 4 * i+1) % (2 * Math.PI))) + b.position;
+                A[i] = new Vector2(a.radius / 2 * (float)Math.Cos((a.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI)),
+                    a.radius / 2 * (float)Math.Sin((a.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI))) + a.position;
+                B[i] = new Vector2(b.radius / 2 * (float)Math.Cos((b.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI)),
+                    b.radius / 2 * (float)Math.Sin((b.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI))) + b.position;
             }
 
             for (int p = 0; p < B.Length; p++)
-            {//first part, compares rectangle A to coordinates from rectangle B
+            {//I've fixed the above, I just need to shorten the next line of ifs
                 for (int i = 0; i < A.Length; i++)
                 {
                     float deltaY = 0;
@@ -315,7 +317,7 @@ namespace AsteroidShip
             //if nothing then 0
             return result;
         }
-        private bool TimingHandler(Entity entity)
+        private bool DestructionHandler(Entity entity)
         {
             if (entity is Bomb)
             {
@@ -328,6 +330,14 @@ namespace AsteroidShip
             {
                 if (entity.health < 0)
                 {
+                    entityList.Add(new Explosion(game, entity.position, true));
+                    return true;
+                }
+            }
+            else if (entity is Explosion)
+            {
+                if (entity.time >= 900)
+                {
                     return true;
                 }
             }
@@ -337,7 +347,7 @@ namespace AsteroidShip
         {
             for (int i = 0; i < entityList.Count; i++)
             {
-                if (!CheckBounds(entityList[i]))
+                if (CheckBounds(entityList[i]))
                 {
                     cleanList.Add(i);
                 }
@@ -367,7 +377,7 @@ namespace AsteroidShip
                         }
                     }
                 }
-                if (TimingHandler(entityList[p]))
+                if (DestructionHandler(entityList[p]))
                 {
                     cleanList.Add(p);
                 }
