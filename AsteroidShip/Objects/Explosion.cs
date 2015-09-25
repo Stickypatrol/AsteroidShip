@@ -17,11 +17,11 @@ namespace AsteroidShip
             }else{
                 tex = game.Content.Load<Texture2D>("smallexplosion");
             }
-            position = new Vector2(_position.X - tex.Width/18, _position.Y - tex.Height/18);
             sizeX = tex.Width / 9;
             sizeY = tex.Height / 9;
             column = 0;
             row = 0;
+            position = new Vector2(_position.X - tex.Width/18, _position.Y - tex.Height/18);
             Console.WriteLine(sizeX + " " + sizeY);
             time = 0;
             scale = 1f;

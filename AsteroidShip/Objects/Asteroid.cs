@@ -16,7 +16,7 @@ namespace AsteroidShip
         public Asteroid(Game1 _game, int side)
         {
             game = _game;
-            tex = game.Content.Load<Texture2D>("black");
+            tex = game.Content.Load<Texture2D>("asteroid");
             if (side == -1) { side = rand.Next(0, 4); };
             if (side == 0)
             {

@@ -12,10 +12,11 @@ namespace AsteroidShip
     public class ObjectController
     {
         public Vector2 basespeed;
-        public bool isSpawning;
+        public bool isSpawning, moveUp, moveDown, moveRight, moveLeft;
         public Ship ship;
         public Random rand = new Random();
         Game1 game;
+        Gun gun;
         InputController inputController;
         SpriteFont verdana;
         List<Entity> entityList;
@@ -36,8 +37,10 @@ namespace AsteroidShip
             countDown = "";
             levelType = "";
             weaponMode = 1;
-            ship = new Ship(game, new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2), 1, 0f);
+            ship = new Ship(game, new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2), 0f);
+            gun = new Gun(game, new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2));
             entityList.Add(ship);
+            entityList.Add(gun);
         }
         public void Update()
         {
@@ -84,28 +87,46 @@ namespace AsteroidShip
                     if (basespeed.Y >= -5f)
                     {
                         basespeed.Y -= 0.2f;
+                        moveUp = false;
+                        moveDown = true;
                     }
                 }
-                if (game.inputController.getKeys(Keys.W) || game.inputController.getKeys(Keys.Up))
+                else if (game.inputController.getKeys(Keys.W) || game.inputController.getKeys(Keys.Up))
                 {
                     if (basespeed.Y <= 5f)
                     {
                         basespeed.Y += 0.2f;
+                        moveUp = true;
+                        moveDown = false;
                     }
+                }
+                else
+                {
+                    moveUp = false;
+                    moveDown = false;
                 }
                 if (game.inputController.getKeys(Keys.D) || game.inputController.getKeys(Keys.Right))
                 {
                     if (basespeed.X >= -5f)
                     {
                         basespeed.X -= 0.2f;
+                        moveLeft = false;
+                        moveRight = true;
                     }
                 }
-                if (game.inputController.getKeys(Keys.A) || game.inputController.getKeys(Keys.Left))
+                else if (game.inputController.getKeys(Keys.A) || game.inputController.getKeys(Keys.Left))
                 {
                     if (basespeed.X <= 5f)
                     {
                         basespeed.X += 0.2f;
+                        moveLeft = true;
+                        moveRight = false;
                     }
+                }
+                else
+                {
+                    moveLeft = false;
+                    moveRight = false;
                 }
             }
         }
@@ -122,11 +143,10 @@ namespace AsteroidShip
             for (int i = 0; i < 4; i++)
             {
                 A[i] = new Vector2(a.radius / 2 * (float)Math.Cos((a.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI)),
-                    a.radius / 2 * (float)Math.Sin((a.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI))) + a.position;
+                    a.radius / 2 * (float)Math.Sin((a.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI))) + a.position - a.origin;
                 B[i] = new Vector2(b.radius / 2 * (float)Math.Cos((b.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI)),
-                    b.radius / 2 * (float)Math.Sin((b.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI))) + b.position;
+                    b.radius / 2 * (float)Math.Sin((b.rotation + (Math.PI / 4) + (Math.PI * 0.5 * i)) % (2 * Math.PI))) + b.position - b.origin;
             }
-
             for (int p = 0; p < B.Length; p++)
             {//I've fixed the above, I just need to shorten the next line of ifs
                 for (int i = 0; i < A.Length; i++)
@@ -273,7 +293,6 @@ namespace AsteroidShip
         }
         private int CollisionEventHandler(Entity A, Entity B)
         {//this method handles the collision event, it takes the cleanList and returns it filled with shit that has to be cleaned up
-            int result = 0;
             if (A is Ship)
             {
                 if (B is Boss)
@@ -283,39 +302,40 @@ namespace AsteroidShip
                 else if (B is Asteroid)
                 {
                     points -= 40;
+                    return 2;
                 }
                 else if (B is Bossbullet)
                 {
                     points -= 25;
-                    result = 2;
+                    return 2;
                 }
             }
             else if (A is Bullet)
             {
                 if (B is Boss)
                 {
-                    result = 1;
+                    return 1;
                     B.health--;
                 }
                 else if (B is Asteroid)
                 {
-                    result = 3;
                     points += 15;
                     entityList.Add(new Explosion(game, B.position, false));
+                    return 3;
                 }
             }
             else if (A is Bomb)
             {
                 if (B is Asteroid)
                 {
-                    result = 2;
+                    return 2;
                 }
             }
+            return 0;
             //if A is to be removed then 1
             //if B '' then 2
             //if both '' then 3
             //if nothing then 0
-            return result;
         }
         private bool DestructionHandler(Entity entity)
         {

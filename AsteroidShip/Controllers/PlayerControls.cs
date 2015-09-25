@@ -8,12 +8,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AsteroidShip
 {
-    class PlayerControls
+    public class PlayerControls
     {
         Game1 game;
         InputController inputController;
-        Vector2 direction;
-
+        public Vector2 direction;
+        public Vector2 shootdirection;
 
         public PlayerControls(Game1 _game)
         {
@@ -28,15 +28,21 @@ namespace AsteroidShip
         }
         private void ShootControl()
         {
+            int gamewidth = game.GraphicsDevice.Viewport.Width/2;
+            int gameheight = game.GraphicsDevice.Viewport.Height/2;
+            int shipwidth = game.objectController.ship.tex.Width / 2;
+            int shipheight = game.objectController.ship.tex.Height / 2;
+            shootdirection = new Vector2(direction.X - gamewidth, direction.Y - gameheight);
             if (inputController.getLeftMouseClick() || inputController.getRightTrigger())
             {
-                game.objectController.CreateBullet(new Vector2(direction.X - game.GraphicsDevice.Viewport.Width/2, direction.Y - game.GraphicsDevice.Viewport.Height/2), 
-                    new Vector2(game.GraphicsDevice.Viewport.Width / 2 + game.objectController.ship.tex.Width / 2, game.GraphicsDevice.Viewport.Height / 2 + game.objectController.ship.tex.Height / 2) -
-                    new Vector2(game.objectController.ship.tex.Width / 2, game.objectController.ship.tex.Height / 2));
+                game.objectController.CreateBullet(shootdirection,
+                    new Vector2(gamewidth + shipwidth, gameheight + shipheight) -
+                    new Vector2(shipwidth, shipheight));
+                //game.soundController.PlaySound("shoot");
             }
             if (inputController.getRightMouseClick() || inputController.getLeftTrigger())
             {
-                game.objectController.CreateBomb(new Vector2(direction.X - game.GraphicsDevice.Viewport.Width/2, direction.Y - game.GraphicsDevice.Viewport.Height/2));
+                game.objectController.CreateBomb(shootdirection);
             }
         }
         private void MouseControls(Vector2 mousePos)

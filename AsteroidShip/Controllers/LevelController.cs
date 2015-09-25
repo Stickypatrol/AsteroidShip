@@ -85,7 +85,7 @@ namespace AsteroidShip
             leveltype = "Get Ready!";
             Console.WriteLine("begin");
             StartTime();
-            triggerTime = 1;
+            triggerTime = 5;
             interval = 0;
             side = -1;
             amount = 0;
@@ -96,7 +96,7 @@ namespace AsteroidShip
             leveltype = "Easy level";
             Console.WriteLine("easy");
             StartTime();
-            triggerTime = 3;
+            triggerTime = 20;
             interval = 500;
             side = -1;
             amount = 1;
@@ -107,7 +107,7 @@ namespace AsteroidShip
             leveltype = "Hard level";
             Console.WriteLine("hard");
             StartTime();
-            triggerTime = 3;
+            triggerTime = 10;
             interval = 100;
             side = rand.Next(0, 4);
             amount = 1;

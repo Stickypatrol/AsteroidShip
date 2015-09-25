@@ -13,7 +13,6 @@ namespace AsteroidShip
         Vector2 position;
         Texture2D tex;
         Background background;
-        PlayerControls playerControls;
         public Target target;
 
         public World(Game1 _game)
@@ -22,12 +21,10 @@ namespace AsteroidShip
             position = new Vector2(0, 0);
             tex = game.Content.Load<Texture2D>("starBG");
             background = new Background(game);
-            playerControls = new PlayerControls(game);
             target = new Target(game);
         }
         public void Update(GameTime gameTime)
         {//all gameobjects here
-            playerControls.Update();
             background.Update();
             target.Update();
         }

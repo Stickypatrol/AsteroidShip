@@ -11,6 +11,8 @@ namespace AsteroidShip
         public ObjectController objectController;
         public InputController inputController;
         public LevelController levelController;
+        public PlayerControls playerControls;
+        //public SoundController soundController;
         public World world;
         Texture2D cursorTex;
         Vector2 cursorPos;
@@ -34,12 +36,15 @@ namespace AsteroidShip
             //initiate controllers and the world
             objectController = new ObjectController(this);
             inputController = new InputController(this);
+            playerControls = new PlayerControls(this);
             levelController = new LevelController(this);
+            //soundController = new SoundController(this);
             world = new World(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
         protected override void Update(GameTime gameTime)
         {
+            playerControls.Update();
             mouseState = Mouse.GetState();
             cursorPos = new Vector2(mouseState.X, mouseState.Y);
             objectController.Update();
